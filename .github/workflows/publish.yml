@@ -20,7 +20,7 @@ jobs:
           echo "GOOGLE_SERVICE_TYPE=service_account" >> $GITHUB_ENV
           echo "GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }}" >> $GITHUB_ENV
           echo "GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }}" >> $GITHUB_ENV
-          echo "GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}" >> $GITHUB_ENV
+          echo "GOOGLE_PRIVATE_KEY='$(echo "${{ secrets.GOOGLE_PRIVATE_KEY }}" | base64 --decode)'" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_EMAIL=${{ secrets.GOOGLE_CLIENT_EMAIL }}" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
           echo "GOOGLE_AUTH_URI=https://accounts.google.com/o/oauth2/auth" >> $GITHUB_ENV
@@ -33,8 +33,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-
 
       - name: Publish
         run: npm publish

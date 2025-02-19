@@ -8,8 +8,21 @@ const SHEET_ID = '1Di-f50XnbR7WlX-R9_47ydfuD5Huo-dq_pR-yxbnSIY';
 const RANGE = 'Sheet1!A1:Z1000'; // Adjust based on your sheet's data range
 
 async function fetchSheetData() {
-    // Load environment variables
+  // Load environment variables
   dotenv.config();
+
+  // Log environment variables for debugging
+  console.log('Checking environment variables...');
+  console.log('GOOGLE_SERVICE_TYPE:', process.env.GOOGLE_SERVICE_TYPE);
+  console.log('GOOGLE_PROJECT_ID:', process.env.GOOGLE_PROJECT_ID);
+  console.log('GOOGLE_PRIVATE_KEY_ID:', process.env.GOOGLE_PRIVATE_KEY_ID ? '✓ Present' : '✗ Missing');
+  console.log('GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? '✓ Present' : '✗ Missing');
+  console.log('GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL);
+  console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+  console.log('GOOGLE_AUTH_URI:', process.env.GOOGLE_AUTH_URI);
+  console.log('GOOGLE_TOKEN_URI:', process.env.GOOGLE_TOKEN_URI);
+  console.log('GOOGLE_AUTH_PROVIDER_CERT_URL:', process.env.GOOGLE_AUTH_PROVIDER_CERT_URL);
+  console.log('GOOGLE_CLIENT_CERT_URL:', process.env.GOOGLE_CLIENT_CERT_URL);
 
   // Construct the service account credentials
   const credentials = {
@@ -26,11 +39,13 @@ async function fetchSheetData() {
     universe_domain: "googleapis.com"
   };
 
+  console.log('\nInitializing Google Auth...');
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
 
+  console.log('\nInitializing Google Sheets API...');
   const sheets = google.sheets({ version: 'v4', auth });
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
