@@ -8045,7 +8045,7 @@ export const images:ImageData[] = [
   },
   {
     "id": "1bWg9Ff5WtIrZxH5ZuzJ_uwqogx2vUCk9",
-    "name": "strawberry",
+    "name": "strawberry-2",
     "filename": "strawberry",
     "title": "Strawberry",
     "url": {
@@ -8068,7 +8068,7 @@ export const images:ImageData[] = [
   },
   {
     "id": "1f_ox9XOgcAMSK0qXEdfrox4u4WBGK13l",
-    "name": "pancakes",
+    "name": "pancakes-2",
     "filename": "pancakes.png",
     "title": "Pancakes",
     "url": {
