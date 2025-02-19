@@ -49,11 +49,11 @@ jobs:
 
           # Create a Node.js script to compare images and generate release notes
           cat > compare-images.js << 'EOF'
-          const fs = require('fs');
+          import { readFileSync } from 'fs';
 
           function extractImages(filePath) {
             try {
-              const data = fs.readFileSync(filePath, 'utf8');
+              const data = readFileSync(filePath, 'utf8');
               const match = data.match(/export const images:ImageData\[] = (\[.*\])/s);
               return match ? JSON.parse(match[1]) : [];
             } catch (e) {
