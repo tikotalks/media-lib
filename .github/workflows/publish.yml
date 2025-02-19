@@ -44,19 +44,16 @@ jobs:
         run: |
           # Get the previous version's images data
           git checkout HEAD~1 || true
-          OLD_IMAGES=$(cat src/data/images.ts 2>/dev/null || echo '{}')
+          cat src/data/images.ts > old_images.ts 2>/dev/null || echo '{}' > old_images.ts
           git checkout -
-
-          # Get the current version's images data
-          NEW_IMAGES=$(cat src/data/images.ts)
 
           # Create a Node.js script to compare images and generate release notes
           cat > compare-images.js << 'EOF'
-          const oldData = process.argv[2];
-          const newData = process.argv[3];
+          const fs = require('fs');
 
-          function extractImages(data) {
+          function extractImages(filePath) {
             try {
+              const data = fs.readFileSync(filePath, 'utf8');
               const match = data.match(/export const images:ImageData\[] = (\[.*\])/s);
               return match ? JSON.parse(match[1]) : [];
             } catch (e) {
@@ -64,8 +61,8 @@ jobs:
             }
           }
 
-          const oldImages = extractImages(oldData);
-          const newImages = extractImages(newData);
+          const oldImages = extractImages('old_images.ts');
+          const newImages = extractImages('src/data/images.ts');
 
           const oldImageNames = new Set(oldImages.map(img => img.name));
           const newImageNames = new Set(newImages.map(img => img.name));
@@ -89,10 +86,13 @@ jobs:
           EOF
 
           # Generate release notes
-          NOTES=$(node compare-images.js "$OLD_IMAGES" "$NEW_IMAGES")
+          NOTES=$(node compare-images.js)
           echo "release_notes<<EOF" >> $GITHUB_ENV
           echo "$NOTES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+
+          # Clean up temporary file
+          rm old_images.ts
 
       - name: Bump version and Create Release
         run: |
