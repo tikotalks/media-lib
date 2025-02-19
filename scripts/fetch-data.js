@@ -24,78 +24,94 @@ async function fetchSheetData() {
   console.log('GOOGLE_AUTH_PROVIDER_CERT_URL:', process.env.GOOGLE_AUTH_PROVIDER_CERT_URL);
   console.log('GOOGLE_CLIENT_CERT_URL:', process.env.GOOGLE_CLIENT_CERT_URL);
 
-  // Construct the service account credentials
-  const credentials = {
-    type: process.env.GOOGLE_SERVICE_TYPE,
-    project_id: process.env.GOOGLE_PROJECT_ID,
-    private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    auth_uri: process.env.GOOGLE_AUTH_URI,
-    token_uri: process.env.GOOGLE_TOKEN_URI,
-    auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_CERT_URL,
-    client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT_URL,
-    universe_domain: "googleapis.com"
-  };
+  try {
+    // Ensure private key is properly formatted
+    const privateKey = process.env.GOOGLE_PRIVATE_KEY
+      ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n')
+      : '';
 
-  console.log('\nInitializing Google Auth...');
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-  });
+    if (!privateKey) {
+      throw new Error('GOOGLE_PRIVATE_KEY is missing or invalid');
+    }
 
-  console.log('\nInitializing Google Sheets API...');
-  const sheets = google.sheets({ version: 'v4', auth });
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: RANGE,
-  });
+    // Construct the service account credentials
+    const credentials = {
+      type: process.env.GOOGLE_SERVICE_TYPE,
+      project_id: process.env.GOOGLE_PROJECT_ID,
+      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+      private_key: privateKey,
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      auth_uri: process.env.GOOGLE_AUTH_URI,
+      token_uri: process.env.GOOGLE_TOKEN_URI,
+      auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_CERT_URL,
+      client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT_URL,
+      universe_domain: 'googleapis.com'
+    };
 
-  const rows = response.data.values;
-  if (!rows || rows.length === 0) {
-    console.error('No data found in the Google Sheet.');
-    return;
-  }
+    console.log('\nInitializing Google Auth...');
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
 
-  // Convert the rows into JSON format
-  const headers = rows[0];
-  console.log(`\nProcessing ${rows.length - 1} images...`);
+    console.log('\nInitializing Google Sheets API...');
+    const sheets = google.sheets({ version: 'v4', auth });
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: RANGE,
+    });
 
-  const categories = new Set();
-  const tags = new Set();
+    const rows = response.data.values;
+    if (!rows || rows.length === 0) {
+      throw new Error('No data found in the Google Sheet.');
+    }
 
-  const jsonData = rows.slice(1).map(row => {
-    return headers.reduce((obj, header, index) => {
-      const headerKey = camelCase(header);
-      if(headerKey == 'tags' || headerKey == 'category'){
-        const values = row[index].split(',').map(tag => tag.trim());
-        obj[headerKey] = values;
-        if(headerKey === 'category') values.forEach(cat => categories.add(cat));
-        if(headerKey === 'tags') values.forEach(tag => tags.add(tag));
+    // Convert the rows into JSON format
+    const headers = rows[0];
+    console.log(`\nProcessing ${rows.length - 1} images...`);
+
+    const categories = new Set();
+    const tags = new Set();
+
+    const jsonData = rows.slice(1).map(row => {
+      return headers.reduce((obj, header, index) => {
+        const headerKey = camelCase(header);
+        if(headerKey == 'tags' || headerKey == 'category'){
+          const values = row[index] ? row[index].split(',').map(tag => tag.trim()) : [];
+          obj[headerKey] = values;
+          if(headerKey === 'category') values.forEach(cat => categories.add(cat));
+          if(headerKey === 'tags') values.forEach(tag => tags.add(tag));
+          return obj;
+        }
+        else if(headerKey.includes('url')){
+          if(!obj['url']) obj['url'] = {};
+          obj['url'][camelCase(headerKey.replace('url',''))] = row[index] || '';
+        } else {
+          obj[camelCase(headerKey)] = row[index] || '';
+        }
+        obj.name = kebabCase((obj.filename || '').replace('.png',''));
         return obj;
-      }
-      else if(headerKey.includes('url')){
-        if(!obj['url']) obj['url'] = {};
-        obj['url'][camelCase(headerKey.replace('url',''))] = row[index] || '';
-      } else {
-        obj[camelCase(headerKey)] = row[index] || '';
-      }
-      obj.name = kebabCase((obj.filename || '').replace('.png',''));
-      return obj;
-    }, {});
-  });
+      }, {});
+    });
 
-  console.log(`Found ${categories.size} categories: ${Array.from(categories).join(', ')}`);
-  console.log(`Found ${tags.size} unique tags`);
+    console.log(`Found ${categories.size} categories: ${Array.from(categories).join(', ')}`);
+    console.log(`Found ${tags.size} unique tags`);
 
-  // Save JSON data
-  const outputPath = path.resolve('src/data/images.ts');
-  fs.writeFileSync(outputPath, `import { ImageData } from "../types";
+    // Save JSON data
+    const outputPath = path.resolve('src/data/images.ts');
+    fs.writeFileSync(outputPath, `import { ImageData } from "../types";
 export const images:ImageData[] = ${JSON.stringify(jsonData, null, 2)}`);
 
-  console.log(`\n✅ Data fetched and saved to ${outputPath}`);
-  console.log(`Total images processed: ${jsonData.length}`);
+    console.log(`\n✅ Data fetched and saved to ${outputPath}`);
+    console.log(`Total images processed: ${jsonData.length}`);
+  } catch (error) {
+    console.error('Error during Google Sheets data fetch:', error);
+    process.exit(1);
+  }
 }
 
-fetchSheetData().catch(console.error);
+fetchSheetData().catch(error => {
+  console.error('Unhandled error:', error);
+  process.exit(1);
+});
