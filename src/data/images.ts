@@ -8259,5 +8259,170 @@ export const images:ImageData[] = [
       "big cat"
     ],
     "description": "A cute and friendly cartoon lion face."
+  },
+  {
+    "id": "1Zs4IoDH3bPV1QgNHb1T6NTRg-G8rw9Kl",
+    "name": "lemonade",
+    "filename": "lemonade",
+    "title": "Lemonade",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/lemonade.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/lemonade_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/lemonade_medium.png"
+    },
+    "category": [
+      "food",
+      "drinks"
+    ],
+    "tags": [
+      "lemonade",
+      "juice",
+      "drink",
+      "lemon",
+      "refreshing",
+      "beverage"
+    ],
+    "description": "A glass of refreshing lemonade with a whole and sliced lemon beside it."
+  },
+  {
+    "id": "1eYLlYoO75LGv_1W-b1Fey6Dho5_dn_n2",
+    "name": "beer",
+    "filename": "beer",
+    "title": "Glass of Beer",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/beer.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/beer_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/beer_medium.png"
+    },
+    "category": [
+      "Drinks",
+      "Food"
+    ],
+    "tags": [
+      "beer",
+      "drink",
+      "glass",
+      "alcohol",
+      "beverage",
+      "foam"
+    ],
+    "description": "A tall glass filled with beer, topped with a frothy foam."
+  },
+  {
+    "id": "1Yr0DlqMkiszADfO5XP-x5XHy_nQ3uAq7",
+    "name": "green-tea",
+    "filename": "green-tea",
+    "title": "Green Tea",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/green-tea.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/green-tea_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/green-tea_medium.png"
+    },
+    "category": [
+      "food",
+      "drinks"
+    ],
+    "tags": [
+      "tea",
+      "green tea",
+      "hot drink",
+      "beverage",
+      "cup",
+      "leaf"
+    ],
+    "description": "A warm cup of green tea with a tea leaf on the side."
+  },
+  {
+    "id": "1Zis9i7zhHctDeBMp-S4eHshlUoXgqTlB",
+    "name": "hot-chocolate",
+    "filename": "hot-chocolate",
+    "title": "Hot Chocolate",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/hot-chocolate.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/hot-chocolate_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/hot-chocolate_medium.png"
+    },
+    "category": [
+      "Food & Drinks",
+      "Warm Drinks"
+    ],
+    "tags": [
+      "hot chocolate",
+      "drink",
+      "beverage",
+      "mug",
+      "warm",
+      "chocolate"
+    ],
+    "description": "A warm cup of hot chocolate in a pink mug."
+  },
+  {
+    "id": "1jtb3OjsYzpYKXE8eM3NX6BVjMYp7MgHs",
+    "name": "latte",
+    "filename": "latte",
+    "title": "Latte",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/latte.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/latte_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/latte_medium.png"
+    },
+    "category": [
+      "drinks",
+      "food"
+    ],
+    "tags": [
+      "latte",
+      "coffee",
+      "drink",
+      "hot beverage",
+      "cup"
+    ],
+    "description": "A warm cup of latte in a brown cup."
+  },
+  {
+    "id": "1puRgQSd2YA2Nliog18huFgMro4x33S3-",
+    "name": "cappuccino",
+    "filename": "cappuccino",
+    "title": "Cappuccino",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/cappuccino.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/cappuccino_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/cappuccino_medium.png"
+    },
+    "category": [
+      "Food",
+      "Drinks"
+    ],
+    "tags": [
+      "cappuccino",
+      "coffee",
+      "hot drink",
+      "latte art",
+      "beverage"
+    ],
+    "description": "A cup of cappuccino with a heart-shaped latte art design on top."
+  },
+  {
+    "id": "1CgU-Ciwo4ShjTsaeBaIUt31-obalJNjE",
+    "name": "espresso",
+    "filename": "espresso",
+    "title": "Espresso",
+    "url": {
+      "original": "https://tiko.s3.eu-north-1.amazonaws.com/espresso.png",
+      "thumbnail": "https://tiko.s3.eu-north-1.amazonaws.com/espresso_thumb.png",
+      "medium": "https://tiko.s3.eu-north-1.amazonaws.com/espresso_medium.png"
+    },
+    "category": [
+      "Food & Drinks"
+    ],
+    "tags": [
+      "coffee",
+      "espresso",
+      "drink",
+      "beverage",
+      "cup",
+      "hot drink"
+    ],
+    "description": "A small cup of espresso coffee on a saucer."
   }
 ]
