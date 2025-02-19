@@ -26,9 +26,15 @@ async function fetchSheetData() {
 
   try {
     // Ensure private key is properly formatted
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY
-      ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n')
-      : '';
+    let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+
+    // Remove quotes if present and normalize line endings
+    privateKey = privateKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
+
+    // Validate private key format
+    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----') || !privateKey.includes('-----END PRIVATE KEY-----')) {
+      throw new Error('GOOGLE_PRIVATE_KEY is not in valid PEM format');
+    }
 
     if (!privateKey) {
       throw new Error('GOOGLE_PRIVATE_KEY is missing or invalid');
