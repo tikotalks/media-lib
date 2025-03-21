@@ -4,7 +4,8 @@ import path from "path";
 import { camelCase, kebabCase, upperSnakeCase } from "@sil/case";
 import dotenv from "dotenv";
 
-const SHEET_ID = "1Di-f50XnbR7WlX-R9_47ydfuD5Huo-dq_pR-yxbnSIY";
+const SHEET_ID = "1riE-QbylW1mDsv7QVMxe72ORCryl_F11N3qTSByK4sc";
+// const SHEET_ID = "1Di-f50XnbR7WlX-R9_47ydfuD5Huo-dq_pR-yxbnSIY";
 const RANGE = "Sheet1!A1:Z1000"; // Adjust based on your sheet's data range
 
 async function fetchSheetData() {
@@ -92,7 +93,7 @@ async function fetchSheetData() {
     const categories = new Set();
     const tags = new Set();
 
-    const jsonData = rows.slice(1).map((row) => {
+    const jsonData = orderByName(rows.slice(1).map((row) => {
       return headers.reduce((obj, header, index) => {
         const headerKey = camelCase(header);
         if (headerKey == "tags" || headerKey == "category") {
@@ -114,7 +115,7 @@ async function fetchSheetData() {
         obj.name = kebabCase((obj.filename || "").replace(".png", ""));
         return obj;
       }, {});
-    });
+    }));
 
     console.log(
       `Found ${categories.size} categories: ${Array.from(categories).join(
@@ -134,6 +135,11 @@ async function fetchSheetData() {
       }
     });
 
+    const orderByName = (data) =>
+      data.sort((a, b) => (a.name > b.name ? 1 : -1));
+
+
+
     // Save JSON data
     const outputPath = path.resolve("src/data/images.ts");
     fs.writeFileSync(
@@ -142,6 +148,8 @@ async function fetchSheetData() {
 export const images:ImageData[] = ${JSON.stringify(jsonData, null, 2)}
 `
     );
+
+
 
     // Make sure there are no doubles, if an entry already exist, add a number after the name;
 
