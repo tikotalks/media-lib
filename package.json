@@ -1,6 +1,6 @@
 {
   "name": "@tikotalks/media",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "description": "Image data management package for Yes-No app",
   "main": "dist/index.js",
   "module": "dist/index.js",
