@@ -34,6 +34,12 @@ async function fetchSheetData() {
   );
   console.log("GOOGLE_CLIENT_CERT_URL:", process.env.GOOGLE_CLIENT_CERT_URL);
 
+  const orderByName = (data) =>
+    data.sort((a, b) => (a.name > b.name ? 1 : -1));
+
+
+
+
   try {
     // Ensure private key is properly formatted
     let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
@@ -134,10 +140,6 @@ async function fetchSheetData() {
         image.name = kebabCase(`${name}-${count + 1}`);
       }
     });
-
-    const orderByName = (data) =>
-      data.sort((a, b) => (a.name > b.name ? 1 : -1));
-
 
 
     // Save JSON data
