@@ -34,11 +34,7 @@ async function fetchSheetData() {
   );
   console.log("GOOGLE_CLIENT_CERT_URL:", process.env.GOOGLE_CLIENT_CERT_URL);
 
-  const orderByName = (data) =>
-    data.sort((a, b) => (a.name > b.name ? 1 : -1));
-
-
-
+  const orderByName = (data) => data.sort((a, b) => (a.name > b.name ? 1 : -1));
 
   try {
     // Ensure private key is properly formatted
@@ -99,29 +95,31 @@ async function fetchSheetData() {
     const categories = new Set();
     const tags = new Set();
 
-    const jsonData = orderByName(rows.slice(1).map((row) => {
-      return headers.reduce((obj, header, index) => {
-        const headerKey = camelCase(header);
-        if (headerKey == "tags" || headerKey == "category") {
-          const values = row[index]
-            ? row[index].split(",").map((tag) => tag.trim())
-            : [];
-          obj[headerKey] = values;
-          if (headerKey === "category")
-            values.forEach((cat) => categories.add(cat));
-          if (headerKey === "tags") values.forEach((tag) => tags.add(tag));
+    const jsonData = orderByName(
+      rows.slice(1).map((row) => {
+        return headers.reduce((obj, header, index) => {
+          const headerKey = camelCase(header);
+          if (headerKey == "tags" || headerKey == "category") {
+            const values = row[index]
+              ? row[index].split(",").map((tag) => tag.trim().toLowerCase())
+              : [];
+            obj[headerKey] = values;
+            if (headerKey === "category")
+              values.forEach((cat) => categories.add(cat));
+            if (headerKey === "tags") values.forEach((tag) => tags.add(tag));
+            return obj;
+          } else if (headerKey.includes("url")) {
+            if (!obj["url"]) obj["url"] = {};
+            obj["url"][camelCase(headerKey.replace("url", ""))] =
+              row[index] || "";
+          } else {
+            obj[camelCase(headerKey)] = row[index] || "";
+          }
+          obj.name = kebabCase((obj.filename || "").replace(".png", ""));
           return obj;
-        } else if (headerKey.includes("url")) {
-          if (!obj["url"]) obj["url"] = {};
-          obj["url"][camelCase(headerKey.replace("url", ""))] =
-            row[index] || "";
-        } else {
-          obj[camelCase(headerKey)] = row[index] || "";
-        }
-        obj.name = kebabCase((obj.filename || "").replace(".png", ""));
-        return obj;
-      }, {});
-    }));
+        }, {});
+      })
+    );
 
     console.log(
       `Found ${categories.size} categories: ${Array.from(categories).join(
@@ -141,7 +139,6 @@ async function fetchSheetData() {
       }
     });
 
-
     // Save JSON data
     const outputPath = path.resolve("src/data/images.ts");
     fs.writeFileSync(
@@ -150,8 +147,6 @@ async function fetchSheetData() {
 export const images:ImageData[] = ${JSON.stringify(jsonData, null, 2)}
 `
     );
-
-
 
     // Make sure there are no doubles, if an entry already exist, add a number after the name;
 
